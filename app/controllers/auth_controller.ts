@@ -44,7 +44,6 @@ export default class AuthController {
                 messagesProvider: new SimpleMessagesProvider({
                     'required': 'The {{ field }} field is required.',
                     'email.email': 'The email must be a valid email address.',
-                    'unique': 'The {{ field }} has already been taken.',
                     'password.minLength': 'The password must be atleast 8 characters.',
                     'password.confirmed': 'The password confirmation does not match.',
                 }),
@@ -52,14 +51,14 @@ export default class AuthController {
 
         try {
             if (await User.query().where('email', data.email).first()) {
-                return response.unprocessableEntity({ error: 'The email has already been taken.' })
+                return response.conflict({ error: 'The email has already been taken.' })
             }
 
             await User.create({
                 email: data.email,
                 password: data.password,
             })
-            return { success: 'Please check your email inbox (and spam) for an access link.' }
+            return response.ok({ success: 'Please check your email inbox (and spam) for an access link.' })
         } catch (e) {
             return response.unprocessableEntity({ error: e.message })
         }
