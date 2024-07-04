@@ -32,7 +32,7 @@ export default class AuthController {
       return response.ok({
         success: true,
         message: 'Login successful.',
-        data : token.value!.release(),
+        data: token.value!.release(),
       })
     } catch (error) {
       return response.unprocessableEntity({
