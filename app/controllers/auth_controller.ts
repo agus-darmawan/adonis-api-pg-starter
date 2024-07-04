@@ -4,14 +4,8 @@ import type { HttpContext } from '@adonisjs/core/http'
 import VerifyEmailNotification from '#mails/verify_email_notification'
 import ResetPasswordNotification from '#mails/reset_password_notification'
 import mail from '@adonisjs/mail/services/main'
-import vine, { SimpleMessagesProvider } from '@vinejs/vine'
-
-const messagesProvider = new SimpleMessagesProvider({
-  'required': 'The {{ field }} field is required.',
-  'email.email': 'The email must be a valid email address.',
-  'password.minLength': 'The password must be at least 8 characters.',
-  'password.confirmed': 'The password confirmation does not match.',
-})
+import vine from '@vinejs/vine'
+import messagesProvider from '../../helper/validation_messages_provider.js'
 
 export default class AuthController {
   async login({ request, response }: HttpContext) {
