@@ -18,6 +18,11 @@ export default await Env.create(new URL('../', import.meta.url), {
   HOST: Env.schema.string({ format: 'host' }),
   LOG_LEVEL: Env.schema.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']),
 
+  BACKEND_URL: Env.schema.string(),
+  FRONTEND_URL: Env.schema.string(),
+  PASSWORD_RESET_PAGE_URL: Env.schema.string(),
+  EMAIL_VERIFY_PAGE_URL: Env.schema.string(),
+
   /*
   |----------------------------------------------------------
   | Variables for configuring database connection
@@ -26,7 +31,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   DB_HOST: Env.schema.string({ format: 'host' }),
   DB_PORT: Env.schema.number(),
   DB_USER: Env.schema.string(),
-  DB_PASSWORD: Env.schema.string.optional(),
+  DB_PASSWORD: Env.schema.string(),
   DB_DATABASE: Env.schema.string(),
 
   /*

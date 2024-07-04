@@ -1,0 +1,26 @@
+@mjml()
+    <mjml>
+        @include('emails/_head')
+        <mj-body background-color="#E7E7E7">
+        @include('emails/_header')
+        <mj-section background-color="#ffffff" padding="10px 20px">
+            <mj-column width="100%">
+              <mj-text font-size="16px" font-weight="500" padding="0 0 10px 0">Verify your Email Address</mj-text>
+              <mj-text padding="0 0 10px 0" font-size="14px" line-height="22px">
+                To start accepting email updates from Statping, please verify your email address by clicking on the button below.
+              </mj-text>
+              <mj-button border-radius="4px" color="#ffffff" background-color="#007bff" href="{{ verifyUrl }}" padding="10px 25px" font-size="14px">
+                Verify Email
+              </mj-button>
+              <mj-text padding="15px 0 5px 0" font-size="14px" line-height="20px">
+                If the button doesn't work, you can use this link:
+              </mj-text>
+              <mj-text align="center" font-size="13px" line-height="20px">
+                <a href="{{ verifyUrl }}">{{ verifyUrl }}</a>
+              </mj-text>
+            </mj-column>
+        </mj-section>
+        @include('emails/_footer')
+        </mj-body>
+    </mjml>
+@end

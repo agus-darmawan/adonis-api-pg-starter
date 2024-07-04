@@ -26,7 +26,8 @@ router.get('*', async ({ response }: HttpContext) => {
   })
 })
 
-router.group(() => {
-  authRoute()
-}).prefix('/api/v1')
-
+router
+  .group(() => {
+    authRoute()
+  })
+  .prefix('/api/v1')
