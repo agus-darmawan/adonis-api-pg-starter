@@ -1,0 +1,129 @@
+import Example from '#models/example'
+import type { HttpContext } from '@adonisjs/core/http'
+import messagesProvider from '../../helper/validation_messages_provider.js'
+import vine from '@vinejs/vine'
+
+export default class ExamplesController {
+  async index({ response }: HttpContext) {
+    try {
+      const examples = await Example.all()
+      return response.ok({
+        success: 'Examples retrieved successfully.',
+        data: examples,
+      })
+    } catch (error) {
+      return response.internalServerError({
+        success: false,
+        message: 'Failed to retrieve examples.',
+        error: error.message,
+      })
+    }
+  }
+
+  async show({ params, response }: HttpContext) {
+    try {
+      const example = await Example.find(params.id)
+      if (!example) {
+        return response.notFound({
+          success: false,
+          message: 'Example not found.',
+        })
+      }
+      return response.ok({
+        success: true,
+        message: 'Example retrieved successfully.',
+        data: example,
+      })
+    } catch (error) {
+      return response.internalServerError({
+        success: false,
+        message: 'Failed to retrieve example.',
+        error: error.message,
+      })
+    }
+  }
+
+  async store({ request, response }: HttpContext) {
+    try {
+      const data = await vine
+        .compile(
+          vine.object({
+            string: vine.string().trim(),
+            number: vine.number(),
+            boolean: vine.boolean(),
+          })
+        )
+        .validate(request.all(), { messagesProvider })
+
+      const example = await Example.create(data)
+      return response.created({
+        success: true,
+        message: 'Example created successfully.',
+        data: example,
+      })
+    } catch (error) {
+      return response.badRequest({
+        success: false,
+        message: 'Failed to create example.',
+        error: error.messages || error.message,
+      })
+    }
+  }
+
+  async update({ params, request, response }: HttpContext) {
+    try {
+      const example = await Example.find(params.id)
+      if (!example) {
+        return response.notFound({
+          success: false,
+          message: 'Example not found.',
+        })
+      }
+
+      const data = await vine
+        .compile(
+          vine.object({
+            string: vine.string().trim(),
+            number: vine.number(),
+            boolean: vine.boolean(),
+          })
+        )
+        .validate(request.all(), { messagesProvider })
+
+      example.merge(data)
+      await example.save()
+      return response.ok({
+        success: true,
+        message: 'Example updated successfully.',
+        data: example,
+      })
+    } catch (error) {
+      return response.badRequest({
+        success: false,
+        message: 'Failed to update example.',
+        error: error.messages || error.message,
+      })
+    }
+  }
+
+  async destroy({ params, response }: HttpContext) {
+    try {
+      const example = await Example.find(params.id)
+      if (!example) {
+        return response.notFound({
+          success: false,
+          message: 'Example not found.',
+        })
+      }
+
+      await example.delete()
+      return response.noContent()
+    } catch (error) {
+      return response.internalServerError({
+        success: false,
+        message: 'Failed to delete example.',
+        error: error.message,
+      })
+    }
+  }
+}
