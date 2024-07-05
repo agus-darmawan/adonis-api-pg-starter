@@ -8,7 +8,8 @@ export default class ExamplesController {
     try {
       const examples = await Example.all()
       return response.ok({
-        success: 'Examples retrieved successfully.',
+        success: true,
+        message: 'Examples retrieved successfully.',
         data: examples,
       })
     } catch (error) {

@@ -11,6 +11,8 @@ import router from '@adonisjs/core/services/router'
 import { HttpContext } from '@adonisjs/core/http'
 
 import authRoute from './routes/v1/auth_route.js'
+import filesRoute from './routes/v1/files_route.js'
+import exampleRoute from './routes/v1/examples_route.js'
 
 router.get('/', async ({ response }: HttpContext) => {
   response.status(200).json({
@@ -29,5 +31,7 @@ router.get('*', async ({ response }: HttpContext) => {
 router
   .group(() => {
     authRoute()
+    filesRoute()
+    exampleRoute()
   })
   .prefix('/api/v1')
