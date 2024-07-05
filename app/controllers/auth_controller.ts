@@ -1,34 +1,32 @@
-import User from '#models/user'
-import { DateTime } from 'luxon'
 import type { HttpContext } from '@adonisjs/core/http'
+import { DateTime } from 'luxon'
+import vine from '@vinejs/vine'
+import User from '#models/user'
+import mail from '@adonisjs/mail/services/main'
 import VerifyEmailNotification from '#mails/verify_email_notification'
 import ResetPasswordNotification from '#mails/reset_password_notification'
-import mail from '@adonisjs/mail/services/main'
-import vine from '@vinejs/vine'
 import messagesProvider from '../../helper/validation_messages_provider.js'
 
 export default class AuthController {
   async login({ request, response }: HttpContext) {
+    const data = await vine
+      .compile(
+        vine.object({
+          email: vine.string().trim().email(),
+          password: vine.string(),
+        })
+      )
+      .validate(request.all(), { messagesProvider })
+      
     try {
-      const data = await vine
-        .compile(
-          vine.object({
-            email: vine.string().trim().email(),
-            password: vine.string(),
-          })
-        )
-        .validate(request.all(), { messagesProvider })
-
       const user = await User.verifyCredentials(data.email, data.password)
       const token = await User.accessTokens.create(user, ['*'], { expiresIn: '1 days' })
-
       if (!token.value!.release()) {
         return response.unprocessableEntity({
           success: false,
           message: 'Invalid email or password.',
         })
       }
-
       return response.ok({
         success: true,
         message: 'Login successful.',
@@ -44,23 +42,22 @@ export default class AuthController {
   }
 
   async register({ request, response }: HttpContext) {
-    try {
-      const data = await vine
-        .compile(
-          vine.object({
-            email: vine.string().trim().email(),
-            password: vine.string().minLength(8).confirmed(),
-          })
-        )
-        .validate(request.all(), { messagesProvider })
+    const data = await vine
+      .compile(
+        vine.object({
+          email: vine.string().trim().email(),
+          password: vine.string().minLength(8).confirmed(),
+        })
+      )
+      .validate(request.all(), { messagesProvider })
 
+    try {
       if (await User.query().where('email', data.email).first()) {
         return response.conflict({
           success: false,
           message: 'The email has already been taken.',
         })
       }
-
       const user = await User.create({ email: data.email, password: data.password })
       await mail.send(new VerifyEmailNotification(user))
       return response.ok({
