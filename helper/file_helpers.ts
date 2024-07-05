@@ -1,5 +1,7 @@
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { dirname } from 'node:path'
 
 export async function saveFile(
   base64String: string,
@@ -33,6 +35,9 @@ export function getFileName(name: string, extension: string): string {
   return `file_${name}.${extension}`
 }
 
+const filename = fileURLToPath(import.meta.url)
+const dirName = dirname(filename)
+
 export function getFilePath(userId: string | number | BigInt, folder: string): string {
-  return path.join(__dirname, '..', '..', 'uploads', folder, String(userId))
+  return path.join(dirName, '..', '..', 'uploads', folder, String(userId))
 }
