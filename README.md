@@ -59,6 +59,11 @@ Start the development server:
 
 The server will start on http://localhost:3333
 
+## API Documentation
+
+API Documentation can be found on postman link :
+https://www.postman.com/agusdarmawan/workspace/adonis-api-pg-starter/overview
+
 ## Contributing
 
 Contributions are welcome! Please create a pull request or submit an issue to discuss any changes.

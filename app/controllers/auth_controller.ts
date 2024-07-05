@@ -17,7 +17,7 @@ export default class AuthController {
         })
       )
       .validate(request.all(), { messagesProvider })
-      
+
     try {
       const user = await User.verifyCredentials(data.email, data.password)
       const token = await User.accessTokens.create(user, ['*'], { expiresIn: '1 days' })
@@ -142,13 +142,14 @@ export default class AuthController {
   }
 
   async resendVerificationEmail({ auth, response }: HttpContext) {
+    if (auth.user!.emailVerifiedAt) {
+      return response.unprocessableEntity({
+        success: false,
+        message: 'Your email is already verified.',
+      })
+    }
+
     try {
-      if (auth.user!.emailVerifiedAt) {
-        return response.unprocessableEntity({
-          success: false,
-          message: 'Your email is already verified.',
-        })
-      }
       await mail.send(new VerifyEmailNotification(auth.user!))
       return response.ok({
         success: true,
@@ -164,15 +165,15 @@ export default class AuthController {
   }
 
   async forgotPassword({ request, response }: HttpContext) {
-    try {
-      const data = await vine
-        .compile(
-          vine.object({
-            email: vine.string().trim().email(),
-          })
-        )
-        .validate(request.all(), { messagesProvider })
+    const data = await vine
+      .compile(
+        vine.object({
+          email: vine.string().trim().email(),
+        })
+      )
+      .validate(request.all(), { messagesProvider })
 
+    try {
       const user = await User.findBy('email', data.email)
       if (!user) {
         return response.unprocessableEntity({
@@ -195,37 +196,37 @@ export default class AuthController {
   }
 
   async resetPassword({ params, request, response }: HttpContext) {
+    if (!request.hasValidSignature()) {
+      return response.unprocessableEntity({
+        success: false,
+        message: 'Invalid reset password link.',
+      })
+    }
+
+    const user = await User.find(params.id)
+    if (!user) {
+      return response.unprocessableEntity({
+        success: false,
+        message: 'Invalid reset password link.',
+      })
+    }
+
+    if (encodeURIComponent(user.password) !== params.token) {
+      return response.unprocessableEntity({
+        success: false,
+        message: 'Invalid reset password link.',
+      })
+    }
+
+    const data = await vine
+      .compile(
+        vine.object({
+          password: vine.string().minLength(8).confirmed(),
+        })
+      )
+      .validate(request.all(), { messagesProvider })
+
     try {
-      if (!request.hasValidSignature()) {
-        return response.unprocessableEntity({
-          success: false,
-          message: 'Invalid reset password link.',
-        })
-      }
-
-      const user = await User.find(params.id)
-      if (!user) {
-        return response.unprocessableEntity({
-          success: false,
-          message: 'Invalid reset password link.',
-        })
-      }
-
-      if (encodeURIComponent(user.password) !== params.token) {
-        return response.unprocessableEntity({
-          success: false,
-          message: 'Invalid reset password link.',
-        })
-      }
-
-      const data = await vine
-        .compile(
-          vine.object({
-            password: vine.string().minLength(8).confirmed(),
-          })
-        )
-        .validate(request.all(), { messagesProvider })
-
       user.password = data.password
       await user.save()
 

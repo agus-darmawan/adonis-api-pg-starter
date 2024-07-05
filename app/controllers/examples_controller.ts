@@ -30,6 +30,7 @@ export default class ExamplesController {
           message: 'Example not found.',
         })
       }
+
       return response.ok({
         success: true,
         message: 'Example retrieved successfully.',
@@ -45,17 +46,17 @@ export default class ExamplesController {
   }
 
   async store({ request, response }: HttpContext) {
-    try {
-      const data = await vine
-        .compile(
-          vine.object({
-            string: vine.string().trim(),
-            number: vine.number(),
-            boolean: vine.boolean(),
-          })
-        )
-        .validate(request.all(), { messagesProvider })
+    const data = await vine
+      .compile(
+        vine.object({
+          string: vine.string().trim(),
+          number: vine.number(),
+          boolean: vine.boolean(),
+        })
+      )
+      .validate(request.all(), { messagesProvider })
 
+    try {
       const example = await Example.create(data)
       return response.created({
         success: true,
@@ -72,25 +73,24 @@ export default class ExamplesController {
   }
 
   async update({ params, request, response }: HttpContext) {
-    try {
-      const example = await Example.find(params.id)
-      if (!example) {
-        return response.notFound({
-          success: false,
-          message: 'Example not found.',
+    const example = await Example.find(params.id)
+    if (!example) {
+      return response.notFound({
+        success: false,
+        message: 'Example not found.',
+      })
+    }
+    const data = await vine
+      .compile(
+        vine.object({
+          string: vine.string().trim(),
+          number: vine.number(),
+          boolean: vine.boolean(),
         })
-      }
+      )
+      .validate(request.all(), { messagesProvider })
 
-      const data = await vine
-        .compile(
-          vine.object({
-            string: vine.string().trim(),
-            number: vine.number(),
-            boolean: vine.boolean(),
-          })
-        )
-        .validate(request.all(), { messagesProvider })
-
+    try {
       example.merge(data)
       await example.save()
       return response.ok({
@@ -108,17 +108,20 @@ export default class ExamplesController {
   }
 
   async destroy({ params, response }: HttpContext) {
-    try {
-      const example = await Example.find(params.id)
-      if (!example) {
-        return response.notFound({
-          success: false,
-          message: 'Example not found.',
-        })
-      }
+    const example = await Example.find(params.id)
+    if (!example) {
+      return response.notFound({
+        success: false,
+        message: 'Example not found.',
+      })
+    }
 
+    try {
       await example.delete()
-      return response.noContent()
+      return response.ok({
+        success: true,
+        message: 'Example deleted successfully.',
+      })
     } catch (error) {
       return response.internalServerError({
         success: false,

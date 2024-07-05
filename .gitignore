@@ -16,6 +16,8 @@ public/assets
 npm-debug.log
 yarn-error.log
 
+uploads
+
 # Editors specific
 .fleet
 .idea
