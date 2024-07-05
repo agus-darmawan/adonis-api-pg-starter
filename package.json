@@ -29,6 +29,7 @@
     "#database/*": "./database/*.js",
     "#start/*": "./start/*.js",
     "#tests/*": "./tests/*.js",
+    "#helpers/*": "./helpers/*.js",
     "#config/*": "./config/*.js"
   },
   "devDependencies": {

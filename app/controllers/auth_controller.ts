@@ -5,7 +5,7 @@ import User from '#models/user'
 import mail from '@adonisjs/mail/services/main'
 import VerifyEmailNotification from '#mails/verify_email_notification'
 import ResetPasswordNotification from '#mails/reset_password_notification'
-import messagesProvider from '../../helper/validation_messages_provider.js'
+import messagesProvider from '#helpers/validation_messages_provider'
 
 export default class AuthController {
   async login({ request, response }: HttpContext) {

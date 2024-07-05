@@ -1,6 +1,6 @@
 import Example from '#models/example'
 import type { HttpContext } from '@adonisjs/core/http'
-import messagesProvider from '../../helper/validation_messages_provider.js'
+import messagesProvider from '#helpers/validation_messages_provider'
 import vine from '@vinejs/vine'
 
 export default class ExamplesController {

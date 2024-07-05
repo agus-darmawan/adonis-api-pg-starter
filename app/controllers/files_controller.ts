@@ -1,14 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import vine from '@vinejs/vine'
 import File from '#models/file'
-import messagesProvider from '../../helper/validation_messages_provider.js'
-import {
-  saveFile,
-  checkBase64,
-  deleteFile,
-  getFilePath,
-  getFileName,
-} from '../../helper/file_helpers.js'
+import messagesProvider from '#helpers/validation_messages_provider'
+import { saveFile, checkBase64, deleteFile, getFilePath, getFileName } from '#helpers/file_helpers'
 import path from 'node:path'
 
 export default class FilesController {
