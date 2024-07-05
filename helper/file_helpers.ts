@@ -29,6 +29,6 @@ export function getFileName(name: string, extension: string): string {
     return `file_${name}.${extension}`
 }
 
-export function getFilePath(userId: string | number | BigInt, folder : string): string {
-    return path.join(__dirname, '..', '..', 'uploads',folder, String(userId))
+export function getFilePath(userId: string | number | BigInt, folder: string): string {
+    return path.join(__dirname, '..', '..', 'uploads', folder, String(userId))
 }

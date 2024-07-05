@@ -5,7 +5,6 @@ import messagesProvider from '../../helper/validation_messages_provider.js'
 import { saveFile, checkBase64, deleteFile, getFilePath, getFileName } from '../../helper/file_helpers.js'
 import path from 'path'
 
-
 export default class FilesController {
     async index({ response }: HttpContext) {
         try {
@@ -73,7 +72,7 @@ export default class FilesController {
 
         try {
             await saveFile(data.file, filePath, fileName)
-            const file = await File.create({ name: data.name, filePath: path.join(filePath, fileName)})
+            const file = await File.create({ name: data.name, filePath: path.join(filePath, fileName) })
             return response.created({
                 success: true,
                 message: 'File uploaded successfully.',
