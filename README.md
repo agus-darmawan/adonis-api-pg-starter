@@ -1,4 +1,4 @@
-# AdonisJS PostgreSQL API Starter
+# AdonisJS V6 PostgreSQL API Starter
 
 This project is a boilerplate for building RESTful APIs using AdonisJS with PostgreSQL. It includes authentication (register, login, logout, password reset, email verification), file management, and basic CRUD operations.
 
