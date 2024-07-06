@@ -1,5 +1,27 @@
 version: '3.9'
+
 services:
+  adonis_app:
+    container_name: adonis_app
+    restart: always
+    build:
+      context: .
+      target: dependencies
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - .env
+    volumes:
+      - ./:/home/node/app
+      # Uncomment the below line if you developing on MacOS
+      # - /home/node/app/node_modules
+    environment:
+      NODE_OPTIONS: '--inspect=0.0.0.0'
+    command: dumb-init node ace serve --watch
+    depends_on:
+      database:
+        condition: service_healthy
+
   database:
     image: postgres:16
     environment:
@@ -10,6 +32,18 @@ services:
       - '${DB_PORT}:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    ports:
+      - '8080:8080'
+    depends_on:
+      - database
 
 volumes:
   postgres-data:

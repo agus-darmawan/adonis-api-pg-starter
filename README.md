@@ -25,39 +25,27 @@ This project is a boilerplate for building RESTful APIs using AdonisJS with Post
    git clone git@github.com:agus-darmawan/adonis-api-pg-starter.git
    ```
 
-2. Install the App
+2. Copy the .env.example to .env and configure your environment variables:
 
    ```bash
-   cd adonis-api-pg-starter
-   pnpm install
+   cp .env.example .
+   node ace generate:key
    ```
 
-3. Copy the .env.example to .env and configure your environment variables:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-4. Set up the database:
+3. Run docker to build the app
 
    ```bash
    docker compose up -d
    ```
 
-5. Run migrations:
+4. Run migrations:
    ```bash
    node ace migration:run
    ```
 
 ## Running the application
 
-Start the development server:
-
-```bash
-  pnpm run dev
-```
-
-The server will start on http://localhost:3333
+The server will start on http://localhost:${PORT}
 
 ## API Documentation
 
@@ -67,7 +55,3 @@ https://www.postman.com/agusdarmawan/workspace/adonis-api-pg-starter/overview
 ## Contributing
 
 Contributions are welcome! Please create a pull request or submit an issue to discuss any changes.
-
-## License
-
-This project is licensed under the MIT License.
