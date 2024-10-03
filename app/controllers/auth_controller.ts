@@ -1,32 +1,30 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { DateTime } from 'luxon'
 import vine from '@vinejs/vine'
+import { DateTime } from 'luxon'
 import User from '#models/user'
 import mail from '@adonisjs/mail/services/main'
 import VerifyEmailNotification from '#mails/verify_email_notification'
 import ResetPasswordNotification from '#mails/reset_password_notification'
+import AuthValidator from '#validators/auth'
 import messagesProvider from '#helpers/validation_messages_provider'
 
 export default class AuthController {
   async login({ request, response }: HttpContext) {
     const data = await vine
-      .compile(
-        vine.object({
-          email: vine.string().trim().email(),
-          password: vine.string(),
-        })
-      )
+      .compile(AuthValidator.loginSchema)
       .validate(request.all(), { messagesProvider })
 
     try {
       const user = await User.verifyCredentials(data.email, data.password)
       const token = await User.accessTokens.create(user, ['*'], { expiresIn: '1 days' })
+
       if (!token.value!.release()) {
         return response.unprocessableEntity({
           success: false,
           message: 'Invalid email or password.',
         })
       }
+
       return response.ok({
         success: true,
         message: 'Login successful.',
@@ -43,12 +41,7 @@ export default class AuthController {
 
   async register({ request, response }: HttpContext) {
     const data = await vine
-      .compile(
-        vine.object({
-          email: vine.string().trim().email(),
-          password: vine.string().minLength(8).confirmed(),
-        })
-      )
+      .compile(AuthValidator.registerSchema)
       .validate(request.all(), { messagesProvider })
 
     try {
@@ -58,8 +51,10 @@ export default class AuthController {
           message: 'The email has already been taken.',
         })
       }
+
       const user = await User.create({ email: data.email, password: data.password })
       await mail.send(new VerifyEmailNotification(user))
+
       return response.ok({
         success: true,
         message: 'Please check your email inbox (and spam) for an access link.',
@@ -166,11 +161,7 @@ export default class AuthController {
 
   async forgotPassword({ request, response }: HttpContext) {
     const data = await vine
-      .compile(
-        vine.object({
-          email: vine.string().trim().email(),
-        })
-      )
+      .compile(AuthValidator.forgotPasswordSchema)
       .validate(request.all(), { messagesProvider })
 
     try {
@@ -181,6 +172,7 @@ export default class AuthController {
           message: "We can't find a user with that e-mail address.",
         })
       }
+
       await mail.send(new ResetPasswordNotification(user))
       return response.ok({
         success: true,
@@ -219,11 +211,7 @@ export default class AuthController {
     }
 
     const data = await vine
-      .compile(
-        vine.object({
-          password: vine.string().minLength(8).confirmed(),
-        })
-      )
+      .compile(AuthValidator.resetPasswordSchema)
       .validate(request.all(), { messagesProvider })
 
     try {

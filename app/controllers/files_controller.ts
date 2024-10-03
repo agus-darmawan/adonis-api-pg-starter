@@ -4,6 +4,7 @@ import File from '#models/file'
 import messagesProvider from '#helpers/validation_messages_provider'
 import { saveFile, checkBase64, deleteFile, getFilePath, getFileName } from '#helpers/file_helpers'
 import path from 'node:path'
+import FileValidator from '#validators/file'
 
 export default class FilesController {
   async index({ response }: HttpContext) {
@@ -49,13 +50,9 @@ export default class FilesController {
   async store({ request, response, auth }: HttpContext) {
     const user = await auth.authenticate()
     const userId = user.currentAccessToken.tokenableId
+
     const data = await vine
-      .compile(
-        vine.object({
-          name: vine.string(),
-          file: vine.string(),
-        })
-      )
+      .compile(FileValidator.fileSchema)
       .validate(request.all(), { messagesProvider })
 
     const validFormats = ['png', 'jpg', 'jpeg']
@@ -90,13 +87,9 @@ export default class FilesController {
   async update({ params, request, response, auth }: HttpContext) {
     const user = await auth.authenticate()
     const userId = user.currentAccessToken.tokenableId
+
     const data = await vine
-      .compile(
-        vine.object({
-          name: vine.string(),
-          file: vine.string(),
-        })
-      )
+      .compile(FileValidator.fileSchema)
       .validate(request.all(), { messagesProvider })
 
     const validFormats = ['png', 'jpg', 'jpeg']

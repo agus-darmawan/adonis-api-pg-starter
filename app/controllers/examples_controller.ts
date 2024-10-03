@@ -1,7 +1,8 @@
 import Example from '#models/example'
 import type { HttpContext } from '@adonisjs/core/http'
-import messagesProvider from '#helpers/validation_messages_provider'
 import vine from '@vinejs/vine'
+import ExampleValidator from '#validators/example'
+import messagesProvider from '#helpers/validation_messages_provider'
 
 export default class ExamplesController {
   async index({ response }: HttpContext) {
@@ -47,13 +48,7 @@ export default class ExamplesController {
 
   async store({ request, response }: HttpContext) {
     const data = await vine
-      .compile(
-        vine.object({
-          string: vine.string().trim(),
-          number: vine.number(),
-          boolean: vine.boolean(),
-        })
-      )
+      .compile(ExampleValidator.createSchema)
       .validate(request.all(), { messagesProvider })
 
     try {
@@ -80,14 +75,9 @@ export default class ExamplesController {
         message: 'Example not found.',
       })
     }
+
     const data = await vine
-      .compile(
-        vine.object({
-          string: vine.string().trim(),
-          number: vine.number(),
-          boolean: vine.boolean(),
-        })
-      )
+      .compile(ExampleValidator.updateSchema)
       .validate(request.all(), { messagesProvider })
 
     try {
