@@ -13,6 +13,7 @@
     "lint:fix": "eslint src --fix && pnpm format",
     "lint:strict": "eslint --max-warnings=0 ",
     "format": "prettier --write .",
+    "format:check": "prettier -c .",
     "typecheck": "tsc --noEmit --incremental false",
     "prepare": "husky install"
   },
