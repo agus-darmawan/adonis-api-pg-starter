@@ -64,7 +64,7 @@ export default class FilesController {
       })
     }
 
-    const filePath = getFilePath(userId, 'example_file')
+    const filePath = getFilePath(String(userId), 'example_file')
     const fileName = getFileName(data.name, fileExtension)
 
     try {
@@ -109,7 +109,7 @@ export default class FilesController {
       })
     }
 
-    const filePath = getFilePath(userId, 'example_file')
+    const filePath = getFilePath(String(userId), 'example_file')
     const fileName = getFileName(data.name, fileExtension)
     const oldFilePath = file.filePath
 
