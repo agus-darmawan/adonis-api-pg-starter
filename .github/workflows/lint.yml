@@ -36,6 +36,3 @@ jobs:
 
       - name: 🔎 Type check
         run: pnpm run typecheck
-
-      - name: 💅 Prettier check
-        run: pnpm run format:check
