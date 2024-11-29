@@ -37,6 +37,6 @@ export function getFileName(name: string, extension: string): string {
   return `${sanitizedName}.${extension}`
 }
 
-export function getFilePath(userId: string | number | BigInt, folder: string): string {
+export function getFilePath(userId: string | number | bigint, folder: string): string {
   return path.join(folder, String(userId))
 }
